@@ -302,14 +302,20 @@ with tabs[1]:
 with tabs[2]:
     cats = ["Attack","Defence","Form","Scoring","Clean Sheets"]
 
+    def hex_to_rgba(hex_color, alpha=0.12):
+        h = hex_color.lstrip("#")
+        r, g, b = int(h[0:2],16), int(h[2:4],16), int(h[4:6],16)
+        return f"rgba({r},{g},{b},{alpha})"
+
     fig_radar = go.Figure()
     for team, d in strength.items():
         vals = list(d.values()) + [list(d.values())[0]]
         clbl = cats + [cats[0]]
+        hex_color = teams[team]["color"]
         fig_radar.add_trace(go.Scatterpolar(
             r=vals, theta=clbl, name=f"{teams[team]['flag']} {team}",
-            line=dict(color=teams[team]["color"], width=2),
-            fill="toself", fillcolor=teams[team]["color"].replace(")", ",0.08)").replace("rgb","rgba") if "rgb" in teams[team]["color"] else teams[team]["color"]+"18",
+            line=dict(color=hex_color, width=2),
+            fill="toself", fillcolor=hex_to_rgba(hex_color, 0.12),
         ))
     fig_radar.update_layout(
         polar=dict(
